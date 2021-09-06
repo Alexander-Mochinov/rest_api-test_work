@@ -25,10 +25,9 @@ class PaymentOperationView(APIView):
             return Response({
                 "error" : "Операция прошла успешно",
                 "amount" : "Ваш текущий баланс равен " + str(request.user.amount),
-                # "history" : 
-            })
+            }, status=status.HTTP_201_CREATED)
         else:
             return Response({
                 "error" : "Операция не прошла",
                 "amount" : "Ваш текущий баланс равен " + str(request.user.amount) 
-            })
+            },  status=status.HTTP_400_BAD_REQUEST)

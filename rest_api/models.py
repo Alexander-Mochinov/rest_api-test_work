@@ -64,32 +64,43 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
  
     @property
     def get_inn(self):
+        """
+            Вывод INN пользователя
+        """
         return self.INN
+
 
     @staticmethod
     def users_search(array_list_inn):
+        """
+            Поиск пользователя по списку ИНН ["...", ...]
+        """
         users_found = []
-        for user in CustomUser.get_user_from_inn(array_list_inn):
+        for user in CustomUser.objects.filter(INN__in = array_list_inn):
             users_found.append(user)
         return users_found
 
     @staticmethod
-    def get_user_from_inn(INN: list):
-        return CustomUser.objects.filter(INN__in = INN)
-
-    @staticmethod
     def divide_amount(amount, count_users):
+        """
+            Кол-во средств на одного человека
+        """
         return amount / count_users
 
     @staticmethod
     def transaction_verification(user, amount):
-        """Проверка на положительный баланс"""
+        """
+            Проверка на достаточность средств на балансе
+        """
         if user.amount > amount:
             return True
         else: return False
 
     @staticmethod
     def send_operations(sender, receiving, amount):
+        """
+            Операция перевода средств на счёт получателя
+        """
         sender = CustomUser.objects.get(id = sender.id)
         receiving = CustomUser.objects.get(id = receiving.id)
         if CustomUser.transaction_verification(sender, amount):
@@ -152,6 +163,9 @@ class Operation(models.Model):
 
     @staticmethod
     def transfer_operation(sender, receiving, amount):
+        """
+            История операций
+        """
         Operation.objects.create(
             sender = sender,
             receiving = receiving,
